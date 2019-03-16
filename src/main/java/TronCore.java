@@ -6,33 +6,17 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class TronCore extends Core implements KeyListener, MouseListener,
 		MouseMotionListener {
 
 	private static final int NUMBER_OF_PLAYERS = 2;
 	private static final int PLAYER_SPEED = 5;
+	private static final Color BACKGROUND_COLOR = Color.BLACK;
 
-	private List<TronPlayer> players;
+	private Set<TronPlayer> players;
 	private Position maxPosition;
-
-	int centrex1 = 40;
-	int centrey1 = 40;
-	int centrex2 = 600;
-	int centrey2 = 440;
-	int currentDirection1 = 1;
-	int currentDirection2 = 3;
-	int moveAmount = 5;
-	ArrayList<Integer> pathx1 = new ArrayList();
-	ArrayList<Integer> pathy1 = new ArrayList();
-	ArrayList<Integer> pathx2 = new ArrayList();
-	ArrayList<Integer> pathy2 = new ArrayList();
-
-	public TronCore() {
-		initializePlayers();
-	}
 
 	public void init() {
 		super.init();
@@ -42,70 +26,41 @@ public class TronCore extends Core implements KeyListener, MouseListener,
 		w.addKeyListener(this);
 		w.addMouseListener(this);
 		w.addMouseMotionListener(this);
+		initializePlayers();
 	}
 
 	public static void main(String[] args) {
 		new TronCore().run();
 	}
 
-	public void draw(Graphics2D g) {
+	public void draw(Graphics2D graphics) {
+		drawBackground(graphics);
 		for (TronPlayer player: players) {
 			player.moveInCurrentDirection(maxPosition);
+			drawPath(graphics, player.getPath(), player.getColor());
 		}
+		if (arePathsCrossed()) {
+			exitGame();
+		}
+	}
 
-	    for (int x = 0;x<pathx1.size();x++){
-	    	if (((centrex1 == pathx1.get(x)) && (centrey1 == pathy1.get(x))) || ((centrex2 == pathx2.get(x)) && (centrey2 == pathy2.get(x))) || ((centrex1 == pathx2.get(x)) && (centrey1 == pathy2.get(x))) || ((centrex2 == pathx1.get(x)) && (centrey2 == pathy1.get(x)))){
-	    		System.exit(0);
-	    	}
-	    }
-		pathx1.add(centrex1);
-		pathy1.add(centrey1);
-		pathx2.add(centrex2);
-		pathy2.add(centrey2);
-		g.setColor(Color.BLACK);
-		g.fillRect(0, 0, screenManager.getWidth(), screenManager.getHeight());
-		for (int x = 0;x<pathx1.size();x++){
-		g.setColor(Color.green);
-		g.fillRect(pathx1.get(x), pathy1.get(x), 10, 10);
-		g.setColor(Color.red);
-		g.fillRect(pathx2.get(x), pathy2.get(x), 10, 10);
+	private void drawBackground(Graphics2D graphics) {
+		graphics.setColor(BACKGROUND_COLOR);
+		graphics.fillRect(0, 0, screenManager.getWidth(), screenManager.getHeight());
+	}
+
+	private void drawPath(Graphics2D graphics, List<Position> path, Color color) {
+		for (Position position: path) {
+			graphics.setColor(color);
+			graphics.fillRect(position.getX(), position.getY(), 10, 10);
 		}
 	}
 
 	public void keyPressed(KeyEvent e) {
-		if (e.getKeyCode() == KeyEvent.VK_UP) {
-			if (currentDirection1 != 2){
-			currentDirection1 = 0;
+		for (TronPlayer player: players) {
+			if (player.isValidKey(e.getKeyCode())) {
+				player.setDirection(player.getControls().getDirection(e.getKeyCode()));
 			}
-		} else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-			if (currentDirection1 != 0){
-				currentDirection1 = 2;
-				}
-		} else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-			if (currentDirection1 != 3){
-				currentDirection1 = 1;
-				}
-		} else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-			if (currentDirection1 != 1){
-				currentDirection1 = 3;
-				}
-		}
-		if (e.getKeyCode() == KeyEvent.VK_W){
-			if (currentDirection2 != 2){
-			currentDirection2 = 0;
-			}
-		} else if (e.getKeyCode() == KeyEvent.VK_S) {
-			if (currentDirection2 != 0){
-				currentDirection2 = 2;
-				}
-		} else if (e.getKeyCode() == KeyEvent.VK_D) {
-			if (currentDirection2 != 3){
-				currentDirection2 = 1;
-				}
-		} else if (e.getKeyCode() == KeyEvent.VK_A) {
-			if (currentDirection2 != 1){
-				currentDirection2 = 3;
-				}
 		}
 	}
 
@@ -138,17 +93,76 @@ public class TronCore extends Core implements KeyListener, MouseListener,
 	}
 
 	public void mouseMoved(MouseEvent e) {
-
 	}
 
 	private void initializePlayers() {
+		players = new HashSet<>();
 		for (int i = 0; i < NUMBER_OF_PLAYERS; i++) {
-			players.add(createPlayerWithRandomPosition());
+			players.add(createPlayerWithRandomAttributes());
 		}
 	}
 
-	private TronPlayer createPlayerWithRandomPosition() {
-		Position center = new Position(0, 0);
-		return new TronPlayer(center, TronDirection.RIGHT, PLAYER_SPEED);
+	private TronPlayer createPlayerWithRandomAttributes() {
+		return new TronPlayer(createPlayerInitialPosition(),
+				TronDirection.DOWN,
+				PLAYER_SPEED,
+				createPlayerUniqueColor(),
+				createPlayerControls());
+		// TODO: Create random and non-blocking color and position
+	}
+
+	private Position createPlayerInitialPosition() {
+		// TODO: Extract to separate class
+		// Should be resolved smarter (by game menu)
+		if (players.size() == 0) {
+			return new Position(0, 0);
+		}
+		return new Position(800, 800);
+	}
+
+	private Color createPlayerUniqueColor() {
+		// TODO: Extract to separate class
+		// Should be resolved smarter
+		if (players.size() == 0) {
+			return Color.GREEN;
+		}
+		return Color.RED;
+	}
+
+	private boolean arePathsCrossed() {
+		for (TronPlayer player: players) {
+			for (TronPlayer otherPlayer: players) {
+				if (player.isCrossingPath(otherPlayer)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+
+	private TronPlayerControls createPlayerControls() {
+		// TODO: Extract to separate class
+		// Should be resolved smarter (by game menu)
+		Map<Integer, TronDirection> controlsMap  = new HashMap<>();
+
+		if (players.size() == 0) {
+			controlsMap.put(KeyEvent.VK_UP, TronDirection.UP);
+			controlsMap.put(KeyEvent.VK_DOWN, TronDirection.DOWN);
+			controlsMap.put(KeyEvent.VK_LEFT, TronDirection.LEFT);
+			controlsMap.put(KeyEvent.VK_RIGHT, TronDirection.RIGHT);
+		}
+		if (players.size() == 1) {
+			controlsMap.put(KeyEvent.VK_W, TronDirection.UP);
+			controlsMap.put(KeyEvent.VK_S, TronDirection.DOWN);
+			controlsMap.put(KeyEvent.VK_A, TronDirection.LEFT);
+			controlsMap.put(KeyEvent.VK_D, TronDirection.RIGHT);
+		}
+		return new TronPlayerControls(controlsMap);
+	}
+
+
+	private void exitGame() {
+		System.exit(0);
 	}
 }
