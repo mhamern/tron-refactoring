@@ -26,11 +26,11 @@ public class Position {
     }
 
     public void moveUp(int amount) {
-        this.y += amount;
+        this.y -= amount;
     }
 
     public void moveDown(int amount) {
-        this.y -= amount;
+        this.y += amount;
     }
 
     public void moveRight(int amount) {
