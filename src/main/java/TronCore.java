@@ -8,8 +8,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.*;
 
-public class TronCore extends Core implements KeyListener, MouseListener,
-		MouseMotionListener {
+public class TronCore extends Core implements KeyListener, MouseListener {
 
 	private static final int NUMBER_OF_PLAYERS = 2;
 	private static final int PLAYER_SPEED = 5;
@@ -25,7 +24,6 @@ public class TronCore extends Core implements KeyListener, MouseListener,
 		maxPosition = new Position(screenManager.getWidth(), screenManager.getHeight());
 		w.addKeyListener(this);
 		w.addMouseListener(this);
-		w.addMouseMotionListener(this);
 		initializePlayers();
 	}
 
@@ -88,12 +86,6 @@ public class TronCore extends Core implements KeyListener, MouseListener,
 	public void mouseReleased(MouseEvent e) {
 	}
 
-	public void mouseDragged(MouseEvent e) {
-
-	}
-
-	public void mouseMoved(MouseEvent e) {
-	}
 
 	private void initializePlayers() {
 		players = new HashSet<>();
@@ -163,6 +155,6 @@ public class TronCore extends Core implements KeyListener, MouseListener,
 
 
 	private void exitGame() {
-		System.exit(0);
+		super.stop();
 	}
 }

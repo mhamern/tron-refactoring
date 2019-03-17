@@ -17,7 +17,7 @@ public class ScreenManager {
 		return graphicsDevice.getDisplayModes();
 	}
 	
-	public DisplayMode findFirstCompatibaleMode(DisplayMode[] modes){
+	public DisplayMode findFirstCompatibleMode(DisplayMode[] modes){
 		
 		DisplayMode goodModes[] = graphicsDevice.getDisplayModes();
 		for(int x = 0; x<modes.length;x++){
