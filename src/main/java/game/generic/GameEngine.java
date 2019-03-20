@@ -1,3 +1,5 @@
+package game.generic;
+
 public interface GameEngine {
     void start();
     void stop();

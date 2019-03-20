@@ -1,3 +1,7 @@
+package game.tron;
+
+import utils.Position;
+
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;

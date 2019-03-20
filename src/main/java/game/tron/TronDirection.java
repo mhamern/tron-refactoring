@@ -1,3 +1,5 @@
+package game.tron;
+
 public enum TronDirection {
     UP,
     DOWN,

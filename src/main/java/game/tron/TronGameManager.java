@@ -1,3 +1,9 @@
+package game.tron;
+
+import game.generic.GameManager;
+import utils.ScreenManager;
+import utils.SupportedDisplayModes;
+
 import java.awt.*;
 
 public class TronGameManager implements GameManager {

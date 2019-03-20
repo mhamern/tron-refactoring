@@ -1,3 +1,5 @@
+package game.tron;
+
 public class GameTimer {
 
     private long gameTimeInMillis;

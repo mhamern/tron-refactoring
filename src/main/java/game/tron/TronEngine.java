@@ -1,3 +1,8 @@
+package game.tron;
+
+import game.generic.GameEngine;
+import utils.Position;
+
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;

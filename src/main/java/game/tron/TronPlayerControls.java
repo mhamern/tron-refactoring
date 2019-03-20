@@ -1,3 +1,5 @@
+package game.tron;
+
 import java.util.Map;
 
 public class TronPlayerControls {

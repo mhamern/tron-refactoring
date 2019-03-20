@@ -1,3 +1,9 @@
+package game.tron;
+
+import game.generic.GameView;
+import utils.Position;
+import utils.ScreenManager;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.List;
