@@ -1,57 +1,50 @@
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.Window;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.util.*;
 
-public class TronCore extends Core implements KeyListener, MouseListener {
+public class TronEngine implements GameEngine, KeyListener, MouseListener {
 
 	private static final int NUMBER_OF_PLAYERS = 2;
 	private static final int PLAYER_SPEED = 5;
-	private static final Color BACKGROUND_COLOR = Color.BLACK;
 
 	private Set<TronPlayer> players;
 	private Position maxPosition;
+	private boolean isRunning;
+	private GameTimer gameTimer;
 
-	public void init() {
-		super.init();
-
-		Window w = screenManager.getFullScreenWindow();
-		maxPosition = new Position(screenManager.getWidth(), screenManager.getHeight());
-		w.addKeyListener(this);
-		w.addMouseListener(this);
+	public TronEngine(int width, int height) {
+		this.maxPosition = new Position(width, height);
 		initializePlayers();
 	}
 
-	public static void main(String[] args) {
-		new TronCore().run();
+	public Set<TronPlayer> getPlayers() {
+		return players;
 	}
 
-	public void draw(Graphics2D graphics) {
-		drawBackground(graphics);
+	public void start() {
+		startGameTimer();
+		isRunning = true;
+	}
+
+	public void stop() {
+		isRunning = false;
+	}
+
+	public void gameStep(){
+		gameTimer.update();
 		for (TronPlayer player: players) {
 			player.moveInCurrentDirection(maxPosition);
-			drawPath(graphics, player.getPath(), player.getColor());
 		}
 		if (arePathsCrossed()) {
-			exitGame();
+			stop();
 		}
 	}
 
-	private void drawBackground(Graphics2D graphics) {
-		graphics.setColor(BACKGROUND_COLOR);
-		graphics.fillRect(0, 0, screenManager.getWidth(), screenManager.getHeight());
-	}
-
-	private void drawPath(Graphics2D graphics, List<Position> path, Color color) {
-		for (Position position: path) {
-			graphics.setColor(color);
-			graphics.fillRect(position.getX(), position.getY(), 10, 10);
-		}
+	public boolean isRunning() {
+		return isRunning;
 	}
 
 	public void keyPressed(KeyEvent e) {
@@ -84,6 +77,11 @@ public class TronCore extends Core implements KeyListener, MouseListener {
 	}
 
 	public void mouseReleased(MouseEvent e) {
+	}
+
+	private void startGameTimer() {
+		gameTimer = new GameTimer();
+		gameTimer.start();
 	}
 
 
@@ -153,8 +151,4 @@ public class TronCore extends Core implements KeyListener, MouseListener {
 		return new TronPlayerControls(controlsMap);
 	}
 
-
-	private void exitGame() {
-		super.stop();
-	}
 }
