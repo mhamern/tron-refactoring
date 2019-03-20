@@ -95,7 +95,7 @@ public class TronPlayer {
     }
 
     private void move(Position boundaries) {
-        switch(getDirection()){
+        switch(direction){
             case DOWN:
                 moveDown(boundaries.getY());
                 break;
@@ -116,23 +116,23 @@ public class TronPlayer {
     }
 
     private void moveUp(int maxHeight) {
-        if (isOutOfBoundsUp(maxHeight)){
-            center.setY(0);
+        if (isOutOfBoundsY(maxHeight)){
+            center.setY(maxHeight);
         } else {
             center.moveUp(speed);
         }
     }
 
     private void moveDown(int maxHeight) {
-        if (isOutOfBoundsDown()){
-            center.setY(maxHeight);
+        if (isOutOfBoundsY(maxHeight)){
+            center.setY(0);
         } else {
             center.moveDown(speed);
         }
     }
 
     private void moveLeft(int maxWidth) {
-        if (isOutOfBoundsLeft()){
+        if (isOutOfBoundsX(maxWidth)){
             center.setX(maxWidth);
         } else {
             center.moveLeft(speed);
@@ -140,28 +140,21 @@ public class TronPlayer {
     }
 
     private void moveRight(int maxWidth) {
-        if (isOutOfBoundsRight(maxWidth)){
+        if (isOutOfBoundsX(maxWidth)){
             center.setX(0);
         } else {
             center.moveRight(speed);
         }
     }
 
-    private boolean isOutOfBoundsDown() {
-        return center.getY() < 0;
+    private boolean isOutOfBoundsY(int maxHeight) {
+        return center.getY() < 0 || center.getY() > maxHeight;
     }
 
-    private boolean isOutOfBoundsUp(int maxHeight) {
-        return center.getY() > maxHeight;
+    private boolean isOutOfBoundsX(int maxWidth) {
+        return center.getX() < 0 || center.getX() > maxWidth;
     }
 
-    private boolean isOutOfBoundsLeft() {
-        return center.getX() < 0;
-    }
-
-    private boolean isOutOfBoundsRight(int maxWidth) {
-        return center.getX() > maxWidth;
-    }
 
     private boolean standsOnPosition(Position position) {
         return center.equals(position);
