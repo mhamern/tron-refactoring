@@ -18,9 +18,8 @@ public class TronView implements GameView {
     public void draw() {
         Graphics2D graphics = screenManager.getGraphics();
         drawBackground(graphics);
-        for (TronPlayer player: players) {
-            drawPath(graphics, player.getPath(), player.getColor());
-        }
+        drawPlayers(graphics);
+        handleFrameTiming();
     }
 
     private void setup() {
@@ -36,11 +35,27 @@ public class TronView implements GameView {
         graphics.fillRect(0, 0, screenManager.getWidth(), screenManager.getHeight());
     }
 
+    private void drawPlayers(Graphics2D graphics) {
+        for (TronPlayer player: players) {
+            drawPath(graphics, player.getPath(), player.getColor());
+        }
+    }
+
+
     private void drawPath(Graphics2D graphics, List<Position> path, Color color) {
         for (Position position: path) {
             graphics.setColor(color);
             graphics.fillRect(position.getX(), position.getY(), 10, 10);
         }
     }
+
+    private void handleFrameTiming() {
+        try {
+            Thread.sleep(20);
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
 
 }
