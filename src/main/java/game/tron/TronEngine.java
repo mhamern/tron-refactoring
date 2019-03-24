@@ -2,14 +2,9 @@ package game.tron;
 
 import game.generic.GameEngine;
 import utils.Position;
-
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.*;
 
-public class TronEngine implements GameEngine, KeyListener, MouseListener {
+public class TronEngine implements GameEngine {
 
 	private static final int NUMBER_OF_PLAYERS = 2;
 
@@ -17,10 +12,12 @@ public class TronEngine implements GameEngine, KeyListener, MouseListener {
 	private Position maxPosition;
 	private boolean isRunning;
 	private GameTimer gameTimer;
+	private TronMouseControl mouseControl;
+	private TronKeyboardControl keyboardControl;
 
 	public TronEngine(int width, int height) {
 		this.maxPosition = new Position(width, height);
-		initializePlayers();
+		initialize();
 	}
 
 	public Set<TronPlayer> getPlayers() {
@@ -39,46 +36,21 @@ public class TronEngine implements GameEngine, KeyListener, MouseListener {
 	public void gameStep(){
 		gameTimer.update();
 		movePlayers();
-		if (CollisionDetector.collisionOccured(players)) {
+		if (CollisionDetector.collisionOccurred(players)) {
 			stop();
 		}
 	}
 
+	public TronMouseControl getMouseListener() {
+		return mouseControl;
+	}
+
+	public TronKeyboardControl getKeyListener() {
+		return keyboardControl;
+	}
 
 	public boolean isRunning() {
 		return isRunning;
-	}
-
-	public void keyPressed(KeyEvent e) {
-		for (TronPlayer player: players) {
-			if (player.isValidKey(e.getKeyCode())) {
-				player.setDirection(player.getControls().getDirection(e.getKeyCode()));
-			}
-		}
-	}
-
-	public void keyReleased(KeyEvent e) {
-
-	}
-
-	public void keyTyped(KeyEvent arg0) {
-
-	}
-
-	public void mouseClicked(MouseEvent e) {
-
-	}
-
-	public void mouseEntered(MouseEvent arg0) {
-	}
-
-	public void mouseExited(MouseEvent arg0) {
-	}
-
-	public void mousePressed(MouseEvent e) {
-	}
-
-	public void mouseReleased(MouseEvent e) {
 	}
 
 	private void startGameTimer() {
@@ -92,7 +64,9 @@ public class TronEngine implements GameEngine, KeyListener, MouseListener {
 		}
 	}
 
-	private void initializePlayers() {
+	private void initialize() {
 		players = PlayerGenerator.generateRandomPlayers(NUMBER_OF_PLAYERS);
+		this.mouseControl = new TronMouseControl(players);
+		this.keyboardControl = new TronKeyboardControl(players);
 	}
 }

@@ -7,7 +7,7 @@ import java.util.List;
 
 public class CollisionDetector {
 
-    public static boolean collisionOccured(Collection<TronPlayer> players) {
+    public static boolean collisionOccurred(Collection<TronPlayer> players) {
         for (TronPlayer player: players) {
             for (TronPlayer otherPlayer: players) {
                 if (areCrossingPaths(player, otherPlayer)) {

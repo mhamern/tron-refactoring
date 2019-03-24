@@ -4,6 +4,7 @@ import utils.Position;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -61,10 +62,8 @@ public class PlayerGenerator {
             controlsMap.put(KeyEvent.VK_RIGHT, TronDirection.RIGHT);
         }
         else {
-            controlsMap.put(KeyEvent.VK_W, TronDirection.UP);
-            controlsMap.put(KeyEvent.VK_S, TronDirection.DOWN);
-            controlsMap.put(KeyEvent.VK_A, TronDirection.LEFT);
-            controlsMap.put(KeyEvent.VK_D, TronDirection.RIGHT);
+            controlsMap.put(MouseEvent.BUTTON1, TronDirection.LEFT);
+            controlsMap.put(MouseEvent.BUTTON3, TronDirection.RIGHT);
         }
         return new TronPlayerControls(controlsMap);
     }

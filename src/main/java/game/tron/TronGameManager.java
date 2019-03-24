@@ -43,8 +43,8 @@ public class TronGameManager implements GameManager {
 
     private void setupGameEngine() {
         gameEngine = new TronEngine(screenManager.getWidth(), screenManager.getHeight());
-        screenManager.getFullScreenWindow().addKeyListener(gameEngine);
-        screenManager.getFullScreenWindow().addMouseListener(gameEngine);
+        screenManager.getFullScreenWindow().addKeyListener(gameEngine.getKeyListener());
+        screenManager.getFullScreenWindow().addMouseListener(gameEngine.getMouseListener());
     }
 
     private void setupView() {

@@ -161,4 +161,8 @@ public class TronPlayer {
     public int hashCode() {
         return Objects.hash(color);
     }
+
+    public void turnDirection(TronDirection turnDirection) {
+        this.setDirection(this.direction.getTurnDirection(turnDirection));
+    }
 }
