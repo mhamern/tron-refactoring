@@ -40,13 +40,12 @@ public class TronEngine implements GameEngine, KeyListener, MouseListener {
 
 	public void gameStep(){
 		gameTimer.update();
-		for (TronPlayer player: players) {
-			player.moveInCurrentDirection(maxPosition);
-		}
-		if (arePathsCrossed()) {
+		movePlayers();
+		if (CollisionDetector.collisionOccured(players)) {
 			stop();
 		}
 	}
+
 
 	public boolean isRunning() {
 		return isRunning;
@@ -90,6 +89,12 @@ public class TronEngine implements GameEngine, KeyListener, MouseListener {
 	}
 
 
+	private void movePlayers() {
+		for (TronPlayer player: players) {
+			player.moveInCurrentDirection(maxPosition);
+		}
+	}
+
 	private void initializePlayers() {
 		players = new HashSet<>();
 		for (int i = 0; i < NUMBER_OF_PLAYERS; i++) {
@@ -103,12 +108,10 @@ public class TronEngine implements GameEngine, KeyListener, MouseListener {
 				PLAYER_SPEED,
 				createPlayerUniqueColor(),
 				createPlayerControls());
-		// TODO: Create random and non-blocking color and position
 	}
 
 	private Position createPlayerInitialPosition() {
 		// TODO: Extract to separate class
-		// Should be resolved smarter (by game menu)
 		if (players.size() == 0) {
 			return new Position(0, 0);
 		}
@@ -122,17 +125,6 @@ public class TronEngine implements GameEngine, KeyListener, MouseListener {
 			return Color.GREEN;
 		}
 		return Color.RED;
-	}
-
-	private boolean arePathsCrossed() {
-		for (TronPlayer player: players) {
-			for (TronPlayer otherPlayer: players) {
-				if (player.isCrossingPath(otherPlayer)) {
-					return true;
-				}
-			}
-		}
-		return false;
 	}
 
 

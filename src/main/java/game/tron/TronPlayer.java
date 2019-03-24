@@ -84,20 +84,6 @@ public class TronPlayer {
         leaveTrail();
     }
 
-    public boolean isCrossingPath(TronPlayer otherPlayer) {
-        List<Position> pathTrail = this.getPathTrail(otherPlayer.getPath());
-        for (Position otherPlayersPosition: pathTrail) {
-            if (standsOnPosition(otherPlayersPosition)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private List<Position> getPathTrail(List<Position> path) {
-        return path.subList(0, path.size() - 1);
-    }
-
     private void move(Position boundaries) {
         switch(direction){
             case DOWN:
@@ -157,11 +143,6 @@ public class TronPlayer {
 
     private boolean isOutOfBoundsX(int maxWidth) {
         return center.getX() < 0 || center.getX() > maxWidth;
-    }
-
-
-    private boolean standsOnPosition(Position position) {
-        return center.equals(position);
     }
 
     private boolean isOppositeDirection(TronDirection directionToChange) {
