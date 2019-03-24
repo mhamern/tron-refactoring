@@ -3,7 +3,6 @@ package game.tron;
 import game.generic.GameEngine;
 import utils.Position;
 
-import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -13,7 +12,6 @@ import java.util.*;
 public class TronEngine implements GameEngine, KeyListener, MouseListener {
 
 	private static final int NUMBER_OF_PLAYERS = 2;
-	private static final int PLAYER_SPEED = 5;
 
 	private Set<TronPlayer> players;
 	private Position maxPosition;
@@ -88,7 +86,6 @@ public class TronEngine implements GameEngine, KeyListener, MouseListener {
 		gameTimer.start();
 	}
 
-
 	private void movePlayers() {
 		for (TronPlayer player: players) {
 			player.moveInCurrentDirection(maxPosition);
@@ -96,56 +93,6 @@ public class TronEngine implements GameEngine, KeyListener, MouseListener {
 	}
 
 	private void initializePlayers() {
-		players = new HashSet<>();
-		for (int i = 0; i < NUMBER_OF_PLAYERS; i++) {
-			players.add(createPlayerWithRandomAttributes());
-		}
+		players = PlayerGenerator.generateRandomPlayers(NUMBER_OF_PLAYERS);
 	}
-
-	private TronPlayer createPlayerWithRandomAttributes() {
-		return new TronPlayer(createPlayerInitialPosition(),
-				TronDirection.DOWN,
-				PLAYER_SPEED,
-				createPlayerUniqueColor(),
-				createPlayerControls());
-	}
-
-	private Position createPlayerInitialPosition() {
-		// TODO: Extract to separate class
-		if (players.size() == 0) {
-			return new Position(0, 0);
-		}
-		return new Position(800, 800);
-	}
-
-	private Color createPlayerUniqueColor() {
-		// TODO: Extract to separate class
-		// Should be resolved smarter
-		if (players.size() == 0) {
-			return Color.GREEN;
-		}
-		return Color.RED;
-	}
-
-
-	private TronPlayerControls createPlayerControls() {
-		// TODO: Extract to separate class
-		// Should be resolved smarter (by game menu)
-		Map<Integer, TronDirection> controlsMap  = new HashMap<>();
-
-		if (players.size() == 0) {
-			controlsMap.put(KeyEvent.VK_UP, TronDirection.UP);
-			controlsMap.put(KeyEvent.VK_DOWN, TronDirection.DOWN);
-			controlsMap.put(KeyEvent.VK_LEFT, TronDirection.LEFT);
-			controlsMap.put(KeyEvent.VK_RIGHT, TronDirection.RIGHT);
-		}
-		if (players.size() == 1) {
-			controlsMap.put(KeyEvent.VK_W, TronDirection.UP);
-			controlsMap.put(KeyEvent.VK_S, TronDirection.DOWN);
-			controlsMap.put(KeyEvent.VK_A, TronDirection.LEFT);
-			controlsMap.put(KeyEvent.VK_D, TronDirection.RIGHT);
-		}
-		return new TronPlayerControls(controlsMap);
-	}
-
 }
