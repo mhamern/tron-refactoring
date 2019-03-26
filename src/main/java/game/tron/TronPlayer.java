@@ -163,6 +163,6 @@ public class TronPlayer {
     }
 
     public void turnDirection(TronDirection turnDirection) {
-        this.setDirection(this.direction.getTurnDirection(turnDirection));
+        setDirection(direction.getTurnDirection(turnDirection));
     }
 }
